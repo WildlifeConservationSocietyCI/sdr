@@ -1,0 +1,55 @@
+#branding {
+  flex-basis: auto !important;
+}
+
+#footer {
+  display: none;
+}
+
+body.change-form.suit_form_submit_on_right .edit-row > div.col-right {
+    width: 18%;
+}
+
+.vDateField {
+    width: 94px!important;
+}
+
+.related-widget-wrapper {
+    white-space: nowrap;
+}
+
+.timezonewarning {
+    display: none;
+    margin-top: .5rem;
+}
+
+#id_areas li {
+    list-style: none;
+    float: left;
+    margin-right: 20px;
+}
+
+.errorlist {
+    color: #b94a48;
+}
+
+td.field-qa_date {
+    width: 116px;
+}
+
+.datetimeshortcuts a:last-child {
+    display: inline-block;
+    vertical-align: text-bottom;
+}
+
+.datetimeshortcuts .date-icon {
+    background: url(/static/admin/img/icon-calendar.svg) 0 0 no-repeat;
+    display: block;
+    height: 16px;
+    width: 16px;
+}
+
+.datetimeshortcuts a:focus .date-icon,
+.datetimeshortcuts a:hover .date-icon {
+    background-position: 0 -16px;
+}
