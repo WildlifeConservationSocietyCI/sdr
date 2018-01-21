@@ -93,3 +93,5 @@ local/
 /*.csv
 /*.sql
 src/static/
+*.pem
+*.zip

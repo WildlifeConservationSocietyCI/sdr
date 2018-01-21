@@ -26,7 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '+d_@vl55=26qzea1x&@es70=&sfmrtkgtsdou-7mgj^b4f57+#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = ENVIRONMENT not in ('prod',)
+DEBUG = ENVIRONMENT not in ('master',)
 
 ALLOWED_HOSTS = ['*']
 if DEBUG is False:
@@ -158,6 +158,6 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_FILE_STORAGE = 'app.utils.OverwriteFileSystemStorage'
 MEDIA_URL = '/media/'
-if ENVIRONMENT in ('prod',):
+if ENVIRONMENT in ('master',):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = '//%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, 'media')
