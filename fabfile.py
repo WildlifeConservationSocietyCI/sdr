@@ -2,7 +2,6 @@ import os
 import time
 # noinspection PyUnresolvedReferences,PyPackageRequirements
 from fabric.api import local
-# from fabric.context_managers import cd
 # pip install -U python-dotenv
 # noinspection PyUnresolvedReferences,PyPackageRequirements
 from dotenv import load_dotenv
@@ -21,6 +20,19 @@ admin_pass = os.environ.get('SU_PASS')
 def _dcmd(cmd):
     """Prefix the container command with the docker cmd"""
     return "docker exec -it %s %s" % (api_container, cmd)
+
+
+def clean():
+    """Cleanup docker: first dangling volumes, then images with no name.
+    https://stackoverflow.com/questions/30604846/docker-error-no-space-left-on-device"""
+    try:
+        local("docker volume rm $(docker volume ls -qf dangling=true)")
+    except:
+        pass  # if there are none, keep going anyway
+    try:
+        local("docker rmi $(docker images | grep '^<none>' | awk '{print $3}')")
+    except:
+        pass  # similarly don't worry if there are no images or they're in use
 
 
 def build():
@@ -50,10 +62,8 @@ def collectstatic():
     local(_dcmd("python3 manage.py collectstatic -c --noinput"))
 
 
-def clearstatic():
-    # with cd('src/media/'):
-        # local("ls | grep -v .gitignore | xargs rm")
-    local("find src/media/ ! -name '.gitignore' | xargs ls")
+def clearmedia():
+    local("find src/media/ -mindepth 1 ! -name '.gitignore' | xargs -r rm")
 
 
 def makemigrations():
@@ -112,6 +122,7 @@ def fresh_install(key_name=None):
     time.sleep(20)
 
     collectstatic()
+    clearmedia()
 
     # db_init()
     dbrestore(key_name)

@@ -13,7 +13,7 @@ RUN rm ./requirements.txt
 
 WORKDIR /var/projects/webapp
 ADD ./src .
-#RUN mkdir -p ./static
+RUN mkdir -p ./static
 
 EXPOSE 80 443 8000
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]

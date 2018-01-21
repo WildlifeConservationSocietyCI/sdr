@@ -92,3 +92,4 @@ local/
 *.py___jb_old___
 /*.csv
 /*.sql
+src/static/
