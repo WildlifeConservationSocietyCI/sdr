@@ -37,8 +37,8 @@ def clean():
 
 def build():
     """Run to build a new image prior to fab up"""
-    local("docker-compose build")
-    # local("docker-compose build --no-cache")
+    # local("docker-compose build")
+    local("docker-compose build --no-cache")
     # local("docker-compose build --no-cache --pull")
 
 
@@ -111,6 +111,15 @@ def dbbackup(key_name):
         ie - fab db_backup:dev
     """
     local(_dcmd("python3 manage.py dbbackup {}".format(key_name)))
+
+
+def deploy(envir, name):
+    """Deploy to Elastic Beanstalk with a specific environment and name,
+        e.g. fab deploy:master,shanghai
+    """
+    # Env options: sdr-master-shanghai,
+    eb_app = 'sdr-%s-%s' % (envir, name)
+    local('./eb_deploy.sh -e %s' % eb_app)
 
 
 def fresh_install(key_name=None):
