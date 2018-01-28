@@ -120,8 +120,6 @@ def deploy(envir, name):
     # Env options: sdr-master-shanghai,
     eb_app = 'sdr-%s-%s' % (envir, name)
     local('./eb_deploy.sh -e %s' % eb_app)
-    print('Remember, for now you have to login to the deployed container and run collectstatic, migrate, and'
-          'supervisorctl restart all.')
 
 
 def fresh_install(key_name=None):
