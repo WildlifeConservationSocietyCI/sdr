@@ -14,6 +14,7 @@ RUN rm ./requirements.txt
 WORKDIR /var/projects/webapp
 ADD ./src .
 RUN mkdir -p ./static
+ADD ./config/webapp.nginxconf /etc/nginx/sites-enabled/
 
 EXPOSE 80 443 8000
 CMD ["supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
