@@ -7,7 +7,7 @@ upstream webapp_server {
 server {
     listen   80 default_server;
     #server_name    webapp.com;
-    client_max_body_size 100M;
+    client_max_body_size 2000M;
     access_log /var/log/webapp/nginx-access.log;
     error_log  /var/log/webapp/nginx-error.log;
 
@@ -39,8 +39,5 @@ server {
             proxy_pass http://webapp_server;
             break;
         }
-
-        # Allow large uploads
-        client_max_body_size 2000M;
     }
 }
