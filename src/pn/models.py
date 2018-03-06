@@ -261,7 +261,6 @@ class PlacePoint(CanonicalModel):
     class Meta:
         verbose_name = 'place point'
         verbose_name_plural = 'place points'
-        ordering = ['point__name']
 
 
 class PlaceLineManager(PlaceGeomManager):
@@ -286,7 +285,6 @@ class PlaceLine(CanonicalModel):
     class Meta:
         verbose_name = 'place line'
         verbose_name_plural = 'place lines'
-        ordering = ['line__name']
 
 
 class PlacePolygonManager(PlaceGeomManager):
@@ -311,4 +309,3 @@ class PlacePolygon(CanonicalModel):
     class Meta:
         verbose_name = 'place polygon'
         verbose_name_plural = 'place polygons'
-        ordering = ['polygon__name']
