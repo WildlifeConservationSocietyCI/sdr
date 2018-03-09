@@ -152,8 +152,8 @@ class Sdr(models.Model):
 
     def __str__(self):
         name = str(self.name_short)
-        if len(name) > 40:
-            return '%s...' % name[:40]
+        if len(name) > 30:
+            return '%s...' % name[:30]
         return name
 
     class Meta:
@@ -225,6 +225,7 @@ class Feature(models.Model):
     qa_processor = models.ForeignKey(User, null=True, blank=True, verbose_name='QA\'d by', on_delete=models.PROTECT)
     qa_date = models.DateField(null=True, blank=True, verbose_name='QA date')
     final = models.BooleanField(default=False)
+    last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
 
     def save(self, *args, **kwargs):
         save_sdr_files(self, *args, **kwargs)
@@ -250,6 +251,7 @@ class Georef(models.Model):
     qa_processor = models.ForeignKey(User, null=True, blank=True, verbose_name='QA\'d by', on_delete=models.PROTECT)
     qa_date = models.DateField(null=True, blank=True, verbose_name='QA date')
     final = models.BooleanField(default=False)
+    last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
 
     def save(self, *args, **kwargs):
         save_sdr_files(self, *args, **kwargs)
@@ -275,6 +277,7 @@ class Scan(models.Model):
     qa_processor = models.ForeignKey(User, null=True, blank=True, verbose_name='QA\'d by', on_delete=models.PROTECT)
     qa_date = models.DateField(null=True, blank=True, verbose_name='QA date')
     final = models.BooleanField(default=False)
+    last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
 
     def save(self, *args, **kwargs):
         save_sdr_files(self, *args, **kwargs)

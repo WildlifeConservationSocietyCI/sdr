@@ -302,6 +302,10 @@ class SdrTabularInline(admin.TabularInline, admin.OSMGeoAdmin):
         if self.verbose_name_plural is None:
             self.verbose_name_plural = self.model._meta.verbose_name_plural
 
+        inline_fieldnames = [f.name for f in self.model._meta.get_fields()]
+        if 'last_modified' in inline_fieldnames:
+            self.readonly_fields = ('last_modified',)
+
     # See https://groups.google.com/forum/#!topic/django-users/l_nsr0_ea0o
     # Note the __init__ override depends on having parent_object
     # All this is just to display parent label on inline heading title

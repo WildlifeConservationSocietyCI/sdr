@@ -14,9 +14,23 @@ body.change-form.suit_form_submit_on_right .edit-row > div.col-right {
   min-width: 180px;
 }
 
+.field-rectification {
+  min-width: 240px;
+}
+
+input[type=number] {
+  padding: 0.5rem 0.5rem !important;
+  min-width: 60px;
+}
+
+input[step] {
+  min-width: 90px;
+}
+
 .field-rectification > .related-widget-wrapper {
   max-width: 180px;
 }
+
 .vDateField {
   width: 94px !important;
 }
