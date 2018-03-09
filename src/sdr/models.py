@@ -152,8 +152,8 @@ class Sdr(models.Model):
 
     def __str__(self):
         name = str(self.name_short)
-        if len(name) > 20:
-            return '%s...' % name[:20]
+        if len(name) > 40:
+            return '%s...' % name[:40]
         return name
 
     class Meta:

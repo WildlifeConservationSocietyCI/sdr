@@ -60,10 +60,11 @@ class Place(models.Model):
 
         linked_names = []
         for pn in placenames:
-            link = reverse('admin:%s_%s_change' % (Placename._meta.app_label, Placename._meta.model_name),
-                           args=(pn.pk,))
-            formatted = format_html('<a href="{0}">{1}</a>', link, pn.name)
-            linked_names.append(mark_safe(formatted))
+            # link = reverse('admin:%s_%s_change' % (Placename._meta.app_label, Placename._meta.model_name),
+            #                args=(pn.pk,))
+            # formatted = format_html('<a href="{0}">{1}</a>', link, pn.name)
+            # linked_names.append(mark_safe(formatted))
+            linked_names.append(pn.name)
         self._placenames = mark_safe('<br />'.join(linked_names))
         self._placenames_export = "\n".join(pn.name for pn in placenames)
 

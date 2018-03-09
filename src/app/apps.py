@@ -5,7 +5,7 @@ from suit.menu import ParentItem, ChildItem
 
 class SuitConfig(DjangoSuitConfig):
     verbose_name = 'The Shanghai Project Spatial Data Resources'
-    layout = 'vertical'
+    layout = 'horizontal'
 
     menu = (
         ParentItem('Spatial Data Resources', children=[
@@ -20,7 +20,7 @@ class SuitConfig(DjangoSuitConfig):
         ], icon='fa fa-map'),
         ParentItem('Places', children=[
             ChildItem(model='pn.place'),
-            ChildItem(model='pn.placename'),
+            # ChildItem(model='pn.placename'),
             ChildItem(model='pn.language'),
             ChildItem(model='pn.placepoint'),
             ChildItem(model='pn.placeline'),
