@@ -22,13 +22,12 @@ class QaInline(SdrTabularInline):
 
     def __init__(self, *args, **kwargs):
         super(QaInline, self).__init__(*args, **kwargs)
-        admin_qs = User.objects.filter(groups__name='administrators').distinct()
+        admin_qs = User.objects.filter(groups__name=settings.QA_GROUP_NAME).distinct()
         self.qa_processors = [(a.pk, str(a)) for a in admin_qs]
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         field = super(QaInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
         if db_field.name == 'qa_processor' and hasattr(self, 'qa_processors'):
-            print(self.qa_processors)
             field.choices = self.qa_processors
         return field
 

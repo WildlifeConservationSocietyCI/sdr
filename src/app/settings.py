@@ -137,6 +137,7 @@ USE_TZ = True
 # Admin customization
 
 PROJECT_NAME = os.environ.get('PROJECT_NAME', 'SDR').strip('"')
+QA_GROUP_NAME = os.environ.get('QA_GROUP_NAME', 'administrators')
 ZOTERO_GROUP = os.environ.get('ZOTERO_GROUP')
 DEFAULT_LAT = os.environ.get('DEFAULT_LAT')  # 4972357
 DEFAULT_LON = os.environ.get('DEFAULT_LON')  # -8229861

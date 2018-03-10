@@ -21,7 +21,6 @@ class CustomUserAdmin(UserAdmin, NoFooterMixin):
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'userprofile__organization')
 
     def get_organization(self, instance):
-        print(self.list_filter)
         return instance.userprofile.organization
     get_organization.admin_order_field = 'userprofile__organization'
     get_organization.short_description = 'Organization'
