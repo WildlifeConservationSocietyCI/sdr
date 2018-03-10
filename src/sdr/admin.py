@@ -35,6 +35,18 @@ class GeorefInline(SdrTabularInline):
         models.DecimalField: {'widget': NumberInput(attrs={'style': 'width: 50px;'})},
     }
 
+    def __init__(self, *args, **kwargs):
+        super(GeorefInline, self).__init__(*args, **kwargs)
+        admin_qs = User.objects.filter(groups__name='administrators')
+        self.qa_processors = [(a.pk, str(a)) for a in admin_qs]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super(GeorefInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name == 'qa_processor' and hasattr(self, 'qa_processors'):
+            print(self.qa_processors)
+            field.choices = self.qa_processors
+        return field
+
 
 class FeatureInline(SdrTabularInline):
     model = Feature

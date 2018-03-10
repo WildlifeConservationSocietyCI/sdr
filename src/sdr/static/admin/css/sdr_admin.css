@@ -14,8 +14,8 @@ body.change-form.suit_form_submit_on_right .edit-row > div.col-right {
   min-width: 180px;
 }
 
-.field-rectification {
-  min-width: 240px;
+.original {
+  display: none;
 }
 
 input[type=number] {
@@ -27,16 +27,24 @@ input[step] {
   min-width: 90px;
 }
 
+.field-file {
+  max-width: 260px;
+}
+
+.field-rectification {
+  min-width: 240px;
+}
+
 .field-rectification > .related-widget-wrapper {
   max-width: 180px;
 }
 
-.vDateField {
-  width: 94px !important;
-}
-
 .related-widget-wrapper {
   white-space: nowrap;
+}
+
+.vDateField {
+  width: 94px !important;
 }
 
 .timezonewarning {
