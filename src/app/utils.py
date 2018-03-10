@@ -96,7 +96,15 @@ def ensure_canonical(instance, parent, siblings, *args):
     return siblings
 
 
-class SdrBaseAdmin(admin.OSMGeoAdmin):
+class NoFooterMixin(object):
+
+    class Media:
+        css = {
+            "all": ("admin/css/sdr_admin.css",)
+        }
+
+
+class SdrBaseAdmin(admin.OSMGeoAdmin, NoFooterMixin):
     list_select_related = True
 
     default_lat = settings.DEFAULT_LAT
@@ -106,12 +114,6 @@ class SdrBaseAdmin(admin.OSMGeoAdmin):
     formfield_overrides = {
         models.TextField: {'widget': AutosizedTextarea},
     }
-
-    class Media:
-        css = {
-            "all": ("admin/css/sdr_admin.css",)
-        }
-        # js = ("admin/js/sdr_admin.js",)
 
     # See https://groups.google.com/forum/#!topic/django-users/l_nsr0_ea0o -- added parentobj param to inline_class()
     # def get_inline_instances(self, request, obj=None):

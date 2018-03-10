@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'storages',
     'django_cleanup',
+    'base',
     'sdr',
     'pn',
     'tools',

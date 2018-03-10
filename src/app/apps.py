@@ -3,6 +3,10 @@ from suit.apps import DjangoSuitConfig
 from suit.menu import ParentItem, ChildItem
 
 
+class BaseConfig(AppConfig):
+    name = 'base'
+
+
 class SuitConfig(DjangoSuitConfig):
     verbose_name = 'The Shanghai Project Spatial Data Resources'
     layout = 'horizontal'
@@ -29,6 +33,7 @@ class SuitConfig(DjangoSuitConfig):
         ParentItem('Users', children=[
             ChildItem(model='auth.user'),
             ChildItem('User groups', 'auth.group'),
+            ChildItem(model='base.organization'),
         ], icon='fa fa-users'),
     )
 
