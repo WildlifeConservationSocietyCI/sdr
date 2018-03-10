@@ -32,11 +32,11 @@ input[step] {
 }
 
 .field-rectification {
-  min-width: 240px;
+  min-width: 180px;
 }
 
 .field-rectification > .related-widget-wrapper {
-  max-width: 180px;
+  max-width: 120px;
 }
 
 .related-widget-wrapper {
