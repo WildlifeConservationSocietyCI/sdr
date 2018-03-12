@@ -41,6 +41,7 @@ class Place(models.Model):
     featuretype = models.ForeignKey(DefFeatureType, verbose_name='feature type', on_delete=models.PROTECT)
     areas = models.ManyToManyField(DefArea)
     last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
+    related_places = models.ManyToManyField('self')
 
     # noinspection PyProtectedMember
     def setnames(self):

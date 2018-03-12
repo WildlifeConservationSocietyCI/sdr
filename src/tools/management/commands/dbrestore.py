@@ -15,6 +15,7 @@ AWS_BACKUP_BUCKET = settings.AWS_BACKUP_BUCKET
 
 class Command(BaseCommand):
     help = 'Kill local processes running runserver command'
+    requires_system_checks = False
 
     def __init__(self):
         super(Command, self).__init__()

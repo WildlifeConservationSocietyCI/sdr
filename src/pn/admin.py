@@ -127,6 +127,68 @@ class PlacePolygonInline(SdrTabularInline):
     formset = CanonicalInlineFormset
 
 
+class RelatedPlacesInline(SdrTabularInline):
+    model = Place.related_places.through
+    fk_name = 'from_place'
+    _parent_obj = None
+    _fk_field = 'to_place'
+
+    def get_formset(self, request, obj=None, **kwargs):
+        print(self.model.to_place)
+        self._parent_obj = obj
+        return super(RelatedPlacesInline, self).get_formset(request, obj, **kwargs)
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == self._fk_field:
+            if hasattr(self, '_parent_obj') and hasattr(self._parent_obj, 'pk'):
+                kwargs['queryset'] = Place.objects.exclude(pk=self._parent_obj.pk)
+        field = super(RelatedPlacesInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return field
+
+
+class RelatedToPlacesInline(RelatedPlacesInline):
+    fk_name = 'from_place'
+    verbose_name = 'related to place'
+    verbose_name_plural = 'related to places'
+    readonly_fields = ('to_place_link', 'to_place_featuretype')
+    _fk_field = 'to_place'
+
+    def to_place_link(self, obj):
+        link = reverse('admin:%s_%s_change' % (Place._meta.app_label, Place._meta.model_name), args=(obj.to_place.pk,))
+        formatted = format_html('<a href="{0}">{1}</a>', link, obj.to_place)
+        return mark_safe(formatted)
+    to_place_link.short_description = 'link'
+
+    def to_place_featuretype(self, obj):
+        return obj.to_place.featuretype
+    to_place_featuretype.short_description = 'feature type'
+
+
+class RelatedFromPlacesInline(RelatedPlacesInline):
+    fk_name = 'to_place'
+    verbose_name_plural = 'places relating to this place'
+    readonly_fields = ('from_place_link', 'from_place_featuretype')
+    fields = readonly_fields
+    _fk_field = 'from_place'
+
+    def from_place_link(self, obj):
+        link = reverse('admin:%s_%s_change' % (Place._meta.app_label, Place._meta.model_name),
+                       args=(obj.from_place.pk,))
+        formatted = format_html('<a href="{0}">{1}</a>', link, obj.from_place)
+        return mark_safe(formatted)
+    from_place_link.short_description = 'place'
+
+    def from_place_featuretype(self, obj):
+        return obj.to_place.featuretype
+    from_place_featuretype.short_description = 'feature type'
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+
 class PlaceAdmin(SdrBaseAdmin):
     def place__name(self, obj):
         return obj.__str__()
@@ -150,7 +212,7 @@ class PlaceAdmin(SdrBaseAdmin):
     filter_horizontal = ('areas',)
 
     inlines = [PlacenameInline, LocationInline, DescriptionInline, LaterdevInline, PlacePointInline, PlaceLineInline,
-               PlacePolygonInline]
+               PlacePolygonInline, RelatedToPlacesInline, RelatedFromPlacesInline]
 
 
 admin.site.register(Language)
