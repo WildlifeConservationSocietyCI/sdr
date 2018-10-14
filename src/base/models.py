@@ -31,3 +31,27 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
         instance.userprofile.save()
     except ObjectDoesNotExist:
         pass
+
+
+class Period(models.Model):
+    name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
+class Reference(models.Model):
+    zotero = models.CharField(max_length=8, verbose_name='zotero ID')
+    name = models.CharField(max_length=255, verbose_name='reference')
+    name_short = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
+
+    def __str__(self):
+        return self.name_short
+
+    class Meta:
+        ordering = ['name']

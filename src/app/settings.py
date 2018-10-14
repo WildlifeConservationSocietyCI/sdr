@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'base',
     'sdr',
     'pn',
+    'species',
     'tools',
 ]
 

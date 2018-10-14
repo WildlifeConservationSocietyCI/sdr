@@ -134,6 +134,21 @@ class SdrBaseAdmin(admin.OSMGeoAdmin, NoFooterMixin):
     actions = (export_model_as_csv,)
 
 
+class ReferenceAdmin(SdrBaseAdmin):
+
+    def zotero_link(self, obj):
+        return zotero_link(obj)
+
+    zotero_link.admin_order_field = 'zotero'
+    zotero_link.short_description = 'Zotero ID'
+
+    def last_modified_formatted(self, obj):
+        return obj.last_modified.strftime('%Y-%m-%d %H:%M:%S')
+
+    last_modified_formatted.admin_order_field = 'last_modified'
+    last_modified_formatted.short_description = 'last modified'
+
+
 # noinspection PyProtectedMember
 class CanonicalSdrBaseAdmin(SdrBaseAdmin):
 
@@ -232,6 +247,19 @@ class CanonicalSdrBaseAdmin(SdrBaseAdmin):
             CanonicalSdrBaseAdmin.delete_selected_ensure_canonical, 'delete_selected',
             "Delete selected %(verbose_name_plural)s")
         return actions
+
+
+class AtLeastOneRequiredInlineFormSet(BaseInlineFormSet):
+
+    def clean(self):
+        """Check that at least one inline has been entered."""
+        super(AtLeastOneRequiredInlineFormSet, self).clean()
+        if any(self.errors):
+            return
+        modelname = self.queryset.model._meta.verbose_name
+        if not any(cleaned_data and not cleaned_data.get('DELETE', False)
+                   for cleaned_data in self.cleaned_data):
+            raise ValidationError('At least one %s is required' % modelname)
 
 
 # noinspection PyProtectedMember,PyAttributeOutsideInit

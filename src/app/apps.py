@@ -30,11 +30,20 @@ class SuitConfig(DjangoSuitConfig):
             ChildItem(model='pn.placeline'),
             ChildItem(model='pn.placepolygon'),
         ], icon='fa fa-map-marker'),
+        ParentItem('Species', children=[
+            ChildItem(model='species.species'),
+            ChildItem(model='species.taxon'),
+            ChildItem(model='species.likelihood'),
+        ]),
+        ParentItem('References', children=[
+            ChildItem(model='base.reference'),
+            ChildItem(model='base.period'),
+        ]),
         ParentItem('Users', children=[
             ChildItem(model='auth.user'),
             ChildItem('User groups', 'auth.group'),
             ChildItem(model='base.organization'),
-        ], icon='fa fa-users'),
+        ], align_right=True, icon='fa fa-users'),
     )
 
     def ready(self):
@@ -49,3 +58,8 @@ class SdrAppConfig(AppConfig):
 class PnAppConfig(AppConfig):
     name = 'pn'
     verbose_name = 'Placenames'
+
+
+class SpeciesAppConfig(AppConfig):
+    name = 'species'
+    verbose_name = 'Species'

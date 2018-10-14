@@ -91,18 +91,8 @@ class SdrAdminForm(ModelForm):
         }
 
 
-class SdrAdmin(SdrBaseAdmin):
+class SdrAdmin(ReferenceAdmin):
     form = SdrAdminForm
-
-    def zotero_link(self, obj):
-        return zotero_link(obj)
-    zotero_link.admin_order_field = 'zotero'
-    zotero_link.short_description = 'Zotero ID'
-
-    def last_modified_formatted(self, obj):
-        return obj.last_modified.strftime('%Y-%m-%d %H:%M:%S')
-    last_modified_formatted.admin_order_field = 'last_modified'
-    last_modified_formatted.short_description = 'last modified'
 
     def scans(self, obj):
         count = Scan.objects.filter(sdr=obj).count()
