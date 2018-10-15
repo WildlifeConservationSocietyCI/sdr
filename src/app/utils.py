@@ -1,6 +1,7 @@
 import csv
 import datetime
 import copy
+import requests
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
@@ -250,15 +251,13 @@ class CanonicalSdrBaseAdmin(SdrBaseAdmin):
 
 
 class AtLeastOneRequiredInlineFormSet(BaseInlineFormSet):
-
     def clean(self):
-        """Check that at least one inline has been entered."""
         super(AtLeastOneRequiredInlineFormSet, self).clean()
         if any(self.errors):
             return
         modelname = self.queryset.model._meta.verbose_name
-        if not any(cleaned_data and not cleaned_data.get('DELETE', False)
-                   for cleaned_data in self.cleaned_data):
+
+        if not any(cleaned_data and not cleaned_data.get('DELETE', False) for cleaned_data in self.cleaned_data):
             raise ValidationError('At least one %s is required' % modelname)
 
 
@@ -384,3 +383,19 @@ class OverwriteFileSystemStorage(FileSystemStorage):
     def get_available_name(self, name, max_length=None):
         self.delete(name)
         return name
+
+
+def query_col(payload):
+    if ('name' not in payload and 'id' not in payload) or ('name' in payload and 'id' in payload):
+        return []
+
+    payload['format'] = 'json'
+    payload['response'] = 'full'
+    r = requests.get(settings.COL_URL, params=payload)
+    r.raise_for_status()
+    r.encoding = 'utf-8'
+    out = r.json()
+    results = out.get('results')
+    if results[0].get('name_status') == 'common name':
+        results = [r['accepted_name'] for r in results]
+    return results

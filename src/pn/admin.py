@@ -12,7 +12,7 @@ class CanonicalAdminForm(ModelForm):
 
     def clean(self):
         cleaned_data = super(CanonicalAdminForm, self).clean()
-        if hasattr(self.instance, 'place'): # i.e., if saving and not adding
+        if hasattr(self.instance, 'place'):  # i.e., if saving and not adding
             if not cleaned_data['canonical']:
                 self.instance.canonical = False
                 parent, siblings = self.instance.get_family()
@@ -89,19 +89,11 @@ class PlacenameInline(SdrTabularInline):
     formset = PlacenameInlineFormset
 
 
-class LocationInlineFormset(BaseInlineFormSet):
-    def clean(self):
-        super(LocationInlineFormset, self).clean()
-        if any(self.errors):
-            return
-
-        if not any(cleaned_data and not cleaned_data.get('DELETE', False) for cleaned_data in self.cleaned_data):
-            raise ValidationError('At least one location is required')
-
-
 class LocationInline(SdrTabularInline):
     model = Location
-    formset = LocationInlineFormset
+    formset = AtLeastOneRequiredInlineFormSet
+    min_num = 1
+    extra = 0
 
 
 class DescriptionInline(SdrTabularInline):

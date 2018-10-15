@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.forms import ModelForm
 from app.utils import *
 from .models import *
 
@@ -20,6 +20,14 @@ class SpeciesReferenceInline(SdrTabularInline):
     extra = 0
 
 
+class SpeciesForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SpeciesForm, self).__init__(*args, **kwargs)
+
+        self.fields['col'].required = False
+        self.fields['name_accepted'].required = False
+
+
 @admin.register(Species)
 class SpeciesAdmin(SdrBaseAdmin):
     list_display = ('name_accepted', 'name_common', 'taxon', 'col_link', 'last_modified', )
@@ -27,7 +35,12 @@ class SpeciesAdmin(SdrBaseAdmin):
     search_fields = ['name_accepted', 'name_common', ]
     actions = (export_model_as_csv,)
     list_filter = ('historical_likelihood', 'taxon')
-    inlines = [SpeciesReferenceInline, ]
+    form = SpeciesForm
+
+    if settings.DEBUG:
+        readonly_fields = ('col_data',)
+    else:
+        exclude = ('col_data',)
 
     def col_link(self, obj):
         return format_html(
@@ -36,3 +49,10 @@ class SpeciesAdmin(SdrBaseAdmin):
 
     col_link.admin_order_field = 'col'
     col_link.short_description = 'COL ID'
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        if '_popup' not in request.GET:
+            self.inlines = [SpeciesReferenceInline, ]
+        return super(SpeciesAdmin, self).change_view(
+            request, object_id, form_url, extra_context=extra_context,
+        )

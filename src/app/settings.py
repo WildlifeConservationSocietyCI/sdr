@@ -149,7 +149,7 @@ AWS_REGION = os.environ.get('AWS_REGION')
 AWS_BACKUP_BUCKET = os.environ.get('AWS_BACKUP_BUCKET')
 AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
+COL_URL = 'http://webservice.catalogueoflife.org/col/webservice'
 
 # Static files (CSS, JavaScript, Images) and media files
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
