@@ -35,12 +35,16 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
 
 class Period(models.Model):
     name = models.CharField(max_length=255)
+    year_start = models.SmallIntegerField(blank=True, null=True, verbose_name='start year')
+    year_end = models.SmallIntegerField(blank=True, null=True, verbose_name='end year')
 
     def __str__(self):
-        return self.name
+        start = self.year_start or ''
+        end = self.year_end or ''
+        return '{} ({}-{})'.format(self.name, start, end)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['year_start', 'year_end', 'name']
 
 
 class Reference(models.Model):
