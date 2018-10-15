@@ -41,7 +41,7 @@ class Period(models.Model):
     def __str__(self):
         start = self.year_start or ''
         end = self.year_end or ''
-        return '{} ({}-{})'.format(self.name, start, end)
+        return '{} ({} - {})'.format(self.name, start, end)
 
     class Meta:
         ordering = ['year_start', 'year_end', 'name']

@@ -37,7 +37,7 @@ class CustomGroupAdmin(GroupAdmin, NoFooterMixin):
 
 
 class PeriodAdmin(SdrBaseAdmin):
-    pass
+    list_display = ('name', 'year_start', 'year_end')
 
 
 class SpeciesReferenceInline(SdrTabularInline):
