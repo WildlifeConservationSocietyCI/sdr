@@ -31,12 +31,18 @@ input[step] {
   max-width: 230px;
 }
 
-.field-rectification {
+.field-rectification, .field-period {
   min-width: 180px;
 }
-
-.field-rectification > .related-widget-wrapper {
+.field-rectification > .related-widget-wrapper, .field-period > .related-widget-wrapper {
   max-width: 120px;
+}
+
+.field-reference {
+  min-width: 220px;
+}
+.field-reference > .related-widget-wrapper {
+  max-width: 160px;
 }
 
 .related-widget-wrapper {
