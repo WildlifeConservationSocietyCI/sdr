@@ -50,7 +50,16 @@ class SpeciesAdmin(SdrBaseAdmin):
     col_link.admin_order_field = 'col'
     col_link.short_description = 'COL ID'
 
+    def add_view(self, request, form_url='', extra_context=None):
+        self.inlines = []
+        if '_popup' not in request.GET:
+            self.inlines = [SpeciesReferenceInline, ]
+        return super(SpeciesAdmin, self).add_view(
+            request, form_url, extra_context=extra_context,
+        )
+
     def change_view(self, request, object_id, form_url='', extra_context=None):
+        self.inlines = []
         if '_popup' not in request.GET:
             self.inlines = [SpeciesReferenceInline, ]
         return super(SpeciesAdmin, self).change_view(

@@ -92,6 +92,8 @@ class Species(models.Model):
 
             except requests.exceptions.ConnectionError:
                 raise ValidationError('Error connecting with Catalog of Life web service.')
+            except RuntimeError as e:
+                raise ValidationError('Error: {}'.format(e))
 
         else:
             raise ValidationError('You must specify a COL ID, accepted scientific name, or common name.')

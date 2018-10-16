@@ -151,6 +151,14 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
 COL_URL = 'http://webservice.catalogueoflife.org/col/webservice'
 
+# email
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+SERVER_EMAIL = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_USE_TLS = True
+
 # Static files (CSS, JavaScript, Images) and media files
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 # https://docs.djangoproject.com/en/1.11/topics/files/
