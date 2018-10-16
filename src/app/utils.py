@@ -395,7 +395,7 @@ def query_col(payload):
     r.raise_for_status()
     r.encoding = 'utf-8'
     out = r.json()
-    results = out.get('results')
-    if results[0].get('name_status') == 'common name':
+    results = out.get('results', [])
+    if len(results) > 0 and results[0].get('name_status') == 'common name':
         results = [r['accepted_name'] for r in results]
     return results

@@ -42,7 +42,6 @@ class PeriodAdmin(SdrBaseAdmin):
 
 class SpeciesReferenceInline(SdrTabularInline):
     model = SpeciesReference
-    min_num = 1
     extra = 0
 
 

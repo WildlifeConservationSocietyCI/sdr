@@ -32,7 +32,9 @@ class Species(models.Model):
     taxon = models.ForeignKey(Taxon, on_delete=models.PROTECT)
     col = models.CharField(max_length=32, verbose_name='Catalog of Life ID')
     name_accepted = models.CharField(max_length=255, verbose_name='accepted scientific name')
-    name_common = models.CharField(max_length=255, blank=True, verbose_name='common name')
+    name_common = models.CharField(max_length=255, blank=True, verbose_name='common name (first English COL)')
+    name_common_ref = models.CharField(max_length=255, blank=True, verbose_name='common name (reference)',
+                                       help_text='Enter if different from COL common name')
     historical_likelihood = models.ForeignKey(Likelihood, on_delete=models.PROTECT, null=True, blank=True)
     introduced = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
@@ -104,12 +106,13 @@ class Species(models.Model):
             name_accepted = self.col_data.get('name')
             common_names = self.col_data.get('common_names')
             name_common = ''
-            if common_names is not None:
-                if len(common_names) == 1:
-                    name_common = common_names[0]['name']
-                elif len(common_names) > 1:
-                    # TODO: determine how to handle multiple common name choices
-                    name_common = common_names[0]['name']
+            if common_names is not None and len(common_names) > 0:
+                for cn in common_names:
+                    lang = cn.get('language')
+                    if lang is not None and \
+                            (lang.lower() == 'english' or lang.lower() == 'en'):
+                        name_common = cn['name']
+                        break
 
             self.col = col
             self.name_accepted = name_accepted
@@ -131,9 +134,10 @@ class Species(models.Model):
 class SpeciesReference(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
-    documentation_text = models.TextField(blank=True)
+    distribution = models.TextField(blank=True)
     period = models.ForeignKey(Period, on_delete=models.PROTECT)
     pagenumbers = models.CharField(max_length=255, blank=True)
+    notes = models.TextField(blank=True)
 
     class Meta:
         ordering = ('species', 'reference',)
