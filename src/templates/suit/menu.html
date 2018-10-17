@@ -4,7 +4,7 @@
 {% with suit_layout='layout'|suit_conf:request %}
   <div id="suit-nav">
     <ul>
-      {% if menu and menu is None %}  {# kludge to handle suit bug, just this line changed #}
+      {% if menu and app_list %}  {# kludge to handle suit bug, just this line changed #}
         {% for parent_item in menu %}
           {% if not parent_item.align_right or suit_layout == 'vertical' %}
             {% include 'suit/menu_item.html' %}
