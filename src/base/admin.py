@@ -1,4 +1,5 @@
 from django.contrib.auth.models import Group
+from django.db.models import Count
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from app.utils import *
 from .models import *
@@ -17,9 +18,14 @@ class UserProfileInline(admin.StackedInline):
 
 class CustomUserAdmin(UserAdmin, NoFooterMixin):
     inlines = (UserProfileInline, )
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_organization')
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_organization',
+                    'get_speciesref_count')
     list_select_related = ('userprofile', )
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'userprofile__organization')
+
+    def get_queryset(self, request):
+        qs = super(CustomUserAdmin, self).get_queryset(request)
+        return qs.annotate(speciesref_count=Count('speciesreference'))
 
     def get_organization(self, instance):
         return instance.userprofile.organization
@@ -30,6 +36,11 @@ class CustomUserAdmin(UserAdmin, NoFooterMixin):
         if not obj:
             return list()
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
+
+    def get_speciesref_count(self, instance):
+        return instance.speciesref_count
+    get_speciesref_count.admin_order_field = 'speciesref_count'
+    get_speciesref_count.short_description = 'Species references'
 
 
 class CustomGroupAdmin(GroupAdmin, NoFooterMixin):
@@ -42,10 +53,11 @@ class PeriodAdmin(SdrBaseAdmin):
 
 class SpeciesReferenceInline(SdrTabularInline):
     model = SpeciesReference
+    fields = ('species', 'reference', 'distribution', 'period', 'pagenumbers', 'notes')
     extra = 0
 
 
-class ReferenceAdmin(ReferenceAdmin):
+class ReferenceAdmin(ReferenceAdmin, SpeciesReferenceMixin):
     list_display = ('name_short', 'zotero_link', 'last_modified')
     list_display_links = ('name_short',)
     search_fields = ['name_short', 'zotero']

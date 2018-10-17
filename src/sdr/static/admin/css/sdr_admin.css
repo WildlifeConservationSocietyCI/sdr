@@ -39,10 +39,14 @@ input[step] {
 }
 
 .field-reference {
-  min-width: 220px;
+  min-width: 240px;
 }
 .field-reference > .related-widget-wrapper {
-  max-width: 160px;
+  max-width: 180px;
+}
+
+.field-pagenumbers {
+  max-width: 100px;
 }
 
 .related-widget-wrapper {

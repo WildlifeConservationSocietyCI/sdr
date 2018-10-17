@@ -15,12 +15,33 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView
 from django.core.urlresolvers import reverse_lazy
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    url(
+        r'^admin/password_reset/$',
+        auth_views.PasswordResetView.as_view(),
+        name='admin_password_reset',
+    ),
+    url(
+        r'^admin/password_reset/done/$',
+        auth_views.PasswordResetDoneView.as_view(),
+        name='password_reset_done',
+    ),
+    url(
+        r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>.+)/$',
+        auth_views.PasswordResetConfirmView.as_view(),
+        name='password_reset_confirm',
+    ),
+    url(
+        r'^reset/done/$',
+        auth_views.PasswordResetCompleteView.as_view(),
+        name='password_reset_complete',
+    ),
     url('^', include('django.contrib.auth.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),

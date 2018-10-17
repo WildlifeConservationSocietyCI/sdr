@@ -16,6 +16,7 @@ class LikelihoodAdmin(SdrBaseAdmin):
 class SpeciesReferenceInline(SdrTabularInline):
     model = SpeciesReference
     formset = AtLeastOneRequiredInlineFormSet
+    fields = ('species', 'reference', 'distribution', 'period', 'pagenumbers', 'notes')
     min_num = 1
     extra = 0
 
@@ -29,7 +30,7 @@ class SpeciesForm(ModelForm):
 
 
 @admin.register(Species)
-class SpeciesAdmin(SdrBaseAdmin):
+class SpeciesAdmin(SdrBaseAdmin, SpeciesReferenceMixin):
     list_display = ('name_accepted', 'name_common', 'taxon', 'col_link', 'last_modified', )
     list_display_links = ('name_accepted', 'name_common', )
     search_fields = ['name_accepted', 'name_common', ]
@@ -46,7 +47,6 @@ class SpeciesAdmin(SdrBaseAdmin):
         return format_html(
             '<a href="http://www.catalogueoflife.org/col/details/species/id/{0}" target="_blank">{0}</a>',
             obj.col)
-
     col_link.admin_order_field = 'col'
     col_link.short_description = 'COL ID'
 

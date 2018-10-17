@@ -41,6 +41,8 @@ class Species(models.Model):
     last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
     col_data = JSONField(verbose_name='Catalog of Life data')
 
+    _form_cleaned = False
+
     class Meta:
         ordering = ['taxon', 'name_accepted', ]
         verbose_name_plural = 'species'
@@ -109,8 +111,7 @@ class Species(models.Model):
             if common_names is not None and len(common_names) > 0:
                 for cn in common_names:
                     lang = cn.get('language')
-                    if lang is not None and \
-                            (lang.lower() == 'english' or lang.lower() == 'en'):
+                    if lang is not None and (lang.lower() == 'english' or lang.lower() == 'en'):
                         name_common = cn['name']
                         break
 
@@ -119,12 +120,11 @@ class Species(models.Model):
             self.name_common = name_common
 
     def clean(self, *args, **kwargs):
-        self.get_col_data()
-        self.update_fields_from_col()
+        if self._form_cleaned is False:
+            self.get_col_data()
+            self.update_fields_from_col()
+            self._form_cleaned = True
         super(Species, self).clean()
-
-    def full_clean(self, *args, **kwargs):
-        return self.clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -138,6 +138,8 @@ class SpeciesReference(models.Model):
     period = models.ForeignKey(Period, on_delete=models.PROTECT)
     pagenumbers = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+                                   null=True, blank=True)
 
     class Meta:
         ordering = ('species', 'reference',)

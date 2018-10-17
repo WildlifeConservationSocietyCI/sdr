@@ -150,6 +150,18 @@ class ReferenceAdmin(SdrBaseAdmin):
     last_modified_formatted.short_description = 'last modified'
 
 
+class SpeciesReferenceMixin(admin.OSMGeoAdmin):
+
+    def save_formset(self, request, form, formset, change):
+        for f in formset.forms:
+            obj = f.instance
+            if type(obj)._meta.model_name == 'speciesreference':
+                if obj.created_by is None:
+                    obj.created_by = request.user
+                    obj.save()
+        return super(SpeciesReferenceMixin, self).save_formset(request, form, formset, change)
+
+
 # noinspection PyProtectedMember
 class CanonicalSdrBaseAdmin(SdrBaseAdmin):
 
