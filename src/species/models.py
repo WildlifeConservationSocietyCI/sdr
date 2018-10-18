@@ -67,12 +67,10 @@ class Species(models.Model):
             print(qry)
             try:
                 col_results = query_col(qry)
-
                 if len(col_results) > 1:
-                    col_results = list({v['id']: v for v in col_results}.values())  # filter duplicates
-
                     # if only one of the results is a Species, use it
-                    species_results = [s for s in col_results if s['rank'].lower() == 'species']
+                    species_results = [s for s in col_results if
+                                       s.get('rank') is not None and s['rank'].lower() == 'species']
                     if len(species_results) == 1:
                         col_results = species_results
                     else:

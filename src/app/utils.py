@@ -411,4 +411,13 @@ def query_col(payload):
     results = out.get('results', [])
     if len(results) > 0 and results[0].get('name_status') == 'common name':
         results = [r['accepted_name'] for r in results]
-    return results
+
+    # for any results without an id, look for one in accepted name
+    ret = []
+    for r in results:
+        if r.get('id') is None and r.get('accepted_name') is not None and r['accepted_name'].get('id') is not None:
+            r['id'] = r['accepted_name']['id']
+        ret.append(r)
+    ret = list({v['id']: v for v in ret if v.get('id') is not None}.values())  # filter duplicates
+
+    return ret
