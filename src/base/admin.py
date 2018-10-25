@@ -1,9 +1,9 @@
 from django.contrib.auth.models import Group
-from django.db.models import Count
+from django.db.models import Count, Prefetch
 from django.contrib.auth.admin import UserAdmin, GroupAdmin
 from app.utils import *
 from .models import *
-from species.models import SpeciesReference
+from species.models import *
 
 
 class OrganizationAdmin(SdrBaseAdmin):
@@ -51,10 +51,27 @@ class PeriodAdmin(SdrBaseAdmin):
     list_display = ('name', 'year_start', 'year_end')
 
 
+class SpeciesReferenceInlineFormset(BaseInlineFormSet):
+
+    def __init__(self, *args, **kwargs):
+        super(SpeciesReferenceInlineFormset, self).__init__(*args, **kwargs)
+        self.queryset = self.queryset.prefetch_related(
+            Prefetch('species', queryset=Species.objects.all().only('name_accepted', 'name_common')),
+            Prefetch('reference', queryset=Reference.objects.all().only('name'))
+        )
+
+
 class SpeciesReferenceInline(SdrTabularInline):
     model = SpeciesReference
     fields = ('species', 'reference', 'distribution', 'period', 'pagenumbers', 'notes')
     extra = 0
+    formset = SpeciesReferenceInlineFormset
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        field = super(SpeciesReferenceInline, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        if db_field.name == 'species' and hasattr(self, 'cached_species'):
+            field.choices = self.cached_species
+        return field
 
 
 class ReferenceAdmin(ReferenceAdmin, SpeciesReferenceMixin):
@@ -62,6 +79,11 @@ class ReferenceAdmin(ReferenceAdmin, SpeciesReferenceMixin):
     list_display_links = ('name_short',)
     search_fields = ['name_short', 'zotero']
     inlines = [SpeciesReferenceInline, ]
+
+    def get_formsets_with_inlines(self, request, obj=None):
+        for inline in self.get_inline_instances(request, obj):
+            inline.cached_species = [(i.pk, str(i)) for i in Species.objects.only('name_accepted', 'name_common')]
+            yield inline.get_formset(request, obj), inline
 
 
 admin.site.unregister(User)

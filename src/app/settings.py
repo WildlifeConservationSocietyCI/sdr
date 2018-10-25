@@ -28,9 +28,21 @@ SECRET_KEY = '+d_@vl55=26qzea1x&@es70=&sfmrtkgtsdou-7mgj^b4f57+#'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = ENVIRONMENT not in ('master',)
 
-ALLOWED_HOSTS = ['*']
-if DEBUG is False:
-    ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS').split(',')]
+ALLOWED_HOSTS = [host.strip() for host in os.environ.get('ALLOWED_HOSTS').split(',')]
+if DEBUG:
+    ALLOWED_HOSTS = ['*']
+    # INTERNAL_IPS = ['172.19.0.1']
+
+    from fnmatch import fnmatch
+
+    class glob_list(list):
+        def __contains__(self, key):
+            for elt in self:
+                if fnmatch(key, elt):
+                    return True
+            return False
+
+    INTERNAL_IPS = glob_list(['127.0.0.1', '172.*.*.*'])
 
 ADMINS = [('Administrator', admin.strip()) for admin in os.environ['ADMINS'].split(',')]
 
@@ -55,9 +67,11 @@ INSTALLED_APPS = [
     'pn',
     'species',
     'tools',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

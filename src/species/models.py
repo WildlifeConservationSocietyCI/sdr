@@ -143,4 +143,4 @@ class SpeciesReference(models.Model):
         ordering = ('species', 'reference',)
 
     def __str__(self):
-        return '{}: {}'.format(self.species, self.reference.name_short)
+        return '{}: {}'.format(self.species, self.reference)

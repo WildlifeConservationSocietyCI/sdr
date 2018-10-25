@@ -95,3 +95,4 @@ local/
 src/static/
 *.pem
 *.zip
+.env.*
