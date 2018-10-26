@@ -30,7 +30,7 @@ class Likelihood(models.Model):
 
 class Species(models.Model):
     taxon = models.ForeignKey(Taxon, on_delete=models.PROTECT)
-    col = models.CharField(max_length=32, verbose_name='Catalog of Life ID')
+    col = models.CharField(max_length=32, verbose_name='Catalog of Life ID', unique=True)
     name_accepted = models.CharField(max_length=255, verbose_name='accepted scientific name')
     name_common = models.CharField(max_length=255, blank=True, verbose_name='common name (first English COL)')
     name_common_ref = models.CharField(max_length=255, blank=True, verbose_name='common name (reference)',
@@ -114,6 +114,7 @@ class Species(models.Model):
                         break
 
             self.col = col
+            self.validate_unique()
             self.name_accepted = name_accepted
             self.name_common = name_common
 
