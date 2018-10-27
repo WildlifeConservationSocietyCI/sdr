@@ -33,6 +33,9 @@ class Species(models.Model):
     col = models.CharField(max_length=32, verbose_name='Catalog of Life ID', unique=True)
     name_accepted = models.CharField(max_length=255, verbose_name='accepted scientific name')
     name_common = models.CharField(max_length=255, blank=True, verbose_name='common name (first English COL)')
+    name_accepted_ref = models.CharField(max_length=255, blank=True,
+                                         verbose_name='accepted scientific name (reference)',
+                                         help_text='Enter if different from COL accepted scientific name')
     name_common_ref = models.CharField(max_length=255, blank=True, verbose_name='common name (reference)',
                                        help_text='Enter if different from COL common name')
     historical_likelihood = models.ForeignKey(Likelihood, on_delete=models.PROTECT, null=True, blank=True)
