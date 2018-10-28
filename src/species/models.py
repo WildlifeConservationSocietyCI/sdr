@@ -47,7 +47,7 @@ class Species(models.Model):
     _form_cleaned = False
 
     class Meta:
-        ordering = ['taxon', 'name_accepted', ]
+        ordering = ['name_accepted', ]
         verbose_name_plural = 'species'
 
     def __str__(self):

@@ -31,9 +31,9 @@ class SpeciesForm(ModelForm):
 
 @admin.register(Species)
 class SpeciesAdmin(SdrBaseAdmin, SpeciesReferenceMixin):
-    list_display = ('name_accepted', 'name_common', 'taxon', 'col_link', 'last_modified', )
-    list_display_links = ('name_accepted', 'name_common', )
-    search_fields = ['name_accepted', 'name_common', ]
+    list_display = ('name_accepted', 'common_name', 'taxon', 'col_link', 'last_modified', )
+    list_display_links = ('name_accepted', 'common_name', )
+    search_fields = ['name_accepted', 'name_common', 'name_accepted_ref', 'name_common_ref', ]
     actions = (export_model_as_csv,)
     list_filter = ('historical_likelihood', 'taxon')
     form = SpeciesForm
@@ -49,6 +49,14 @@ class SpeciesAdmin(SdrBaseAdmin, SpeciesReferenceMixin):
             obj.col)
     col_link.admin_order_field = 'col'
     col_link.short_description = 'COL ID'
+
+    def common_name(self, obj):
+        cname = obj.name_common
+        if cname == '' or cname is None:
+            cname = obj.name_common_ref
+        return cname
+    common_name.admin_order_field = 'name_common'
+    common_name.short_description = 'common name'
 
     def add_view(self, request, form_url='', extra_context=None):
         self.inlines = []

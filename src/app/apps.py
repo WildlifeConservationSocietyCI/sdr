@@ -10,6 +10,7 @@ class BaseConfig(AppConfig):
 class SuitConfig(DjangoSuitConfig):
     verbose_name = 'The Shanghai Project Spatial Data Resources'
     layout = 'horizontal'
+    list_per_page = 100
 
     menu = (
         ParentItem('Spatial Data Resources', children=[
