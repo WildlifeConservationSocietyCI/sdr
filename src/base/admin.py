@@ -75,7 +75,6 @@ class SpeciesReferenceInlineFormset(BaseInlineFormSet):
 #         return field
 
 
-# noinspection PyProtectedMember
 class SpeciesReferenceInline(SdrTabularInline):
     model = SpeciesReference
     formset = SpeciesReferenceInlineFormset

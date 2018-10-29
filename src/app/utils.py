@@ -155,6 +155,9 @@ class SpeciesReferenceMixin(admin.OSMGeoAdmin):
     def save_formset(self, request, form, formset, change):
         instances = formset.save(commit=False)
         for f in formset.forms:
+            f.clean()
+            if not f.cleaned_data:
+                return
             obj = f.instance
             if type(obj)._meta.model_name == 'speciesreference':
                 if obj.created_by is None:
