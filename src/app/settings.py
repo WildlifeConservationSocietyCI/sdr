@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import sys
 
 # Options: None, DEV, PROD
 ENVIRONMENT = os.environ.get('ENV')
@@ -186,3 +187,38 @@ MEDIA_URL = '/media/'
 if ENVIRONMENT in ('master',):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     MEDIA_URL = '//%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, 'media')
+
+DEBUG_LEVEL = 'ERROR'
+if ENVIRONMENT in ('local', 'dev'):
+    DEBUG_LEVEL = 'DEBUG'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': DEBUG_LEVEL,
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout
+        }
+    },
+    'formatters': {
+        'file': {
+            'format': '%(asctime)s\t%(name)s\t%(levelname)s\t%(message)s',
+        },
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'django.security.DisallowedHost': {
+            'handlers': ['null'],
+            'propagate': False,
+        },
+    }
+}
