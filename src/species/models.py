@@ -20,6 +20,7 @@ class Taxon(models.Model):
 
 class Likelihood(models.Model):
     name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
 
     class Meta:
         ordering = ('name',)
@@ -40,6 +41,7 @@ class Species(models.Model):
                                        help_text='Enter if different from COL common name')
     historical_likelihood = models.ForeignKey(Likelihood, on_delete=models.PROTECT, null=True, blank=True)
     introduced = models.BooleanField(default=False)
+    composite_habitat = models.TextField(blank=True)
     notes = models.TextField(blank=True)
     last_modified = models.DateTimeField(auto_now=True, verbose_name='last modified')
     col_data = JSONField(verbose_name='Catalog of Life data')
@@ -136,7 +138,7 @@ class Species(models.Model):
 class SpeciesReference(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
-    distribution = models.TextField(blank=True)
+    distribution = models.TextField(blank=True, verbose_name='Distribution/habitat')
     period = models.ForeignKey(Period, on_delete=models.PROTECT)
     pagenumbers = models.CharField(max_length=255, blank=True)
     notes = models.TextField(blank=True)
