@@ -36,6 +36,10 @@ class SuitConfig(DjangoSuitConfig):
             ChildItem(model='species.taxon'),
             ChildItem(model='species.likelihood'),
         ]),
+        ParentItem('Muir Web', children=[
+            ChildItem(model='muirweb.element'),
+            ChildItem(model='muirweb.relationship'),
+        ]),
         ParentItem('References', children=[
             ChildItem(model='base.reference'),
             ChildItem(model='base.period'),
@@ -64,3 +68,8 @@ class PnAppConfig(AppConfig):
 class SpeciesAppConfig(AppConfig):
     name = 'species'
     verbose_name = 'Species'
+
+
+class MuirwebConfig(AppConfig):
+    name = 'muirweb'
+    verbose_name = 'Muir Web'

@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'sdr',
     'pn',
     'species',
+    'muirweb',
     'tools',
     'debug_toolbar',
 ]
