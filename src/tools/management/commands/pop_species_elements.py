@@ -51,7 +51,8 @@ class Command(BaseCommand):
 
         if species.count() > 0:
             mwid = taxon_ranges[taxon_name]
-            max_mwid = Element.objects.filter(species__taxon=taxon).aggregate(Max('elementid'))['elementid__max']
+            max_mwid = Element.objects.filter(species__taxon=taxon, species__historical_likelihood_id__lte=3) \
+                .aggregate(Max('elementid'))['elementid__max']
             if max_mwid is not None:
                 mwid = int(max_mwid)
             for s in species:
