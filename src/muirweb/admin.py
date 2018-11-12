@@ -157,10 +157,10 @@ class ElementAdmin(SdrBaseAdmin):
             inline.cached_interactiontypes = cached_interactiontypes
             yield inline.get_formset(request, obj), inline
 
-    class Media:
-        css = {
-            "all": ("admin/css/muirweb_admin.css",)
-        }
+    # class Media:
+    #     css = {
+    #         "all": ("admin/css/muirweb_admin.css",)
+    #     }
 
 
 @admin.register(Relationship)
