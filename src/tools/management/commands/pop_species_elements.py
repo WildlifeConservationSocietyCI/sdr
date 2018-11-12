@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Max
+from base.models import Reference
 from species.models import Species, Taxon
 from muirweb.models import Element
 
@@ -22,52 +23,43 @@ class Command(BaseCommand):
             taxon = Taxon.objects.get(name=taxon_name).pk
         except Taxon.DoesNotExist:
             raise CommandError('Taxon does not exist: {}'.format(taxon_name))
-        species = Species.objects.filter(taxon=taxon).order_by('name_accepted')
+        species = Species.objects.filter(taxon=taxon, historical_likelihood_id__lte=2).order_by('name_accepted')
 
         clear = options.get('clear')
         if clear:
             Element.objects.filter(species__taxon=taxon).delete()
 
-        # welikia element ids:
-        # birds 3000 - 4000
-        # marine fish 6000 - 8000 (some anadromous?)
-        # freshwater fish 7000 - 8000 mostly
-        # mammals 1000 - 2000
-        # plants = 8000 - (3000+ in welikia)
-        # amphibians 5000 - 5500
-        # reptiles = 5500 - 6000
-        # jerusalem taxa: amphibians, birds, fish, freshwater inverts, green algae, mammals, plants, reptiles
-        # Question: can we define a universal set? And in such a way to guarantee no clashing?
         taxon_ranges = {
-            "amphibians": 5000,
-            "birds": 3000,
-            "fish": 6000,
-            "freshwater inverts": 7000,
-            "green algae": 2000,
             "mammals": 1000,
-            "plants": 8000,
-            "reptiles": 5500
+            "birds": 2000,
+            "reptiles": 4000,
+            "amphibians": 5000,
+            "fish": 6000,
+            "plants": 10000,
+            "freshwater inverts": 20000,
+            "green algae": 30000,
         }
 
         if species.count() > 0:
             mwid = taxon_ranges[taxon_name]
-            max_mwid = Element.objects.filter(species__taxon=taxon, species__historical_likelihood_id__lte=3) \
-                .aggregate(Max('elementid'))['elementid__max']
+            max_mwid = Element.objects.filter(species__taxon=taxon).aggregate(Max('elementid'))['elementid__max']
             if max_mwid is not None:
                 mwid = int(max_mwid)
             for s in species:
                 if s.name_accepted and s.name_accepted != '':
-                    existing_elements = Element.objects.filter(species=s)
-                    if existing_elements.count() < 1:
-                        e = Element(
-                            elementid=Decimal('{}.00'.format(mwid)),
-                            name=s.__str__().strip(),
-                            species=s,
-                            description=s.composite_habitat
-                        )
-                        refs = [r.reference for r in s.speciesreference_set.all()]
-                        e.save()
-                        e.references.add(*refs)
-                        print(e.__str__().encode('utf-8'))
+                    try:
+                        e = Element.objects.get(species=s)
+                    except Element.DoesNotExist:
+                        e = Element(species=s)
+                        e.elementid = Decimal('{}.00'.format(mwid))
+                    e.name = s.__str__().strip()
+                    e.description = s.composite_habitat
+                    e.save()
+                    refs = [r.reference for r in s.speciesreference_set.all()]
+                    for r in refs:
+                        ref = {k: v for (k, v) in r.__dict__.items() if not k.startswith('_')}
+                        reference, _ = Reference.objects.get_or_create(**ref)
+                        e.references.add(reference)
+                    print(e.__str__().encode('utf-8'))
 
-                        mwid += 1
+                    mwid += 1

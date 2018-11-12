@@ -92,12 +92,12 @@ class Element(models.Model):
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
     references = models.ManyToManyField('base.Reference', blank=True)
 
-    def save(self, *args, **kwargs):
-        if self.species:
-            self.name = self.species.__str__()
-        else:
-            self.name = ''
-        super(Element, self).save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.species:
+    #         self.name = self.species.__str__()
+    #     else:
+    #         self.name = ''
+    #     super(Element, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
