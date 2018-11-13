@@ -1,9 +1,11 @@
 from decimal import Decimal
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Max
+from django.conf import settings
 from base.models import Reference
 from species.models import Species, Taxon
 from muirweb.models import Element
+from app.utils import update_species_element
 
 
 class Command(BaseCommand):
@@ -29,37 +31,11 @@ class Command(BaseCommand):
         if clear:
             Element.objects.filter(species__taxon=taxon).delete()
 
-        taxon_ranges = {
-            "mammals": 1000,
-            "birds": 2000,
-            "reptiles": 4000,
-            "amphibians": 5000,
-            "fish": 6000,
-            "plants": 10000,
-            "freshwater inverts": 20000,
-            "green algae": 30000,
-        }
-
         if species.count() > 0:
-            mwid = taxon_ranges[taxon_name]
+            mwid = settings.TAXON_ELEMENTID_RANGES[taxon_name]
             max_mwid = Element.objects.filter(species__taxon=taxon).aggregate(Max('elementid'))['elementid__max']
             if max_mwid is not None:
                 mwid = int(max_mwid)
             for s in species:
-                if s.name_accepted and s.name_accepted != '':
-                    try:
-                        e = Element.objects.get(species=s)
-                    except Element.DoesNotExist:
-                        e = Element(species=s)
-                        e.elementid = Decimal('{}.00'.format(mwid))
-                    e.name = s.__str__().strip()
-                    e.description = s.composite_habitat
-                    e.save()
-                    refs = [r.reference for r in s.speciesreference_set.all()]
-                    for r in refs:
-                        ref = {k: v for (k, v) in r.__dict__.items() if not k.startswith('_')}
-                        reference, _ = Reference.objects.get_or_create(**ref)
-                        e.references.add(reference)
-                    print(e.__str__().encode('utf-8'))
-
-                    mwid += 1
+                update_species_element(s, mwid)
+                mwid += 1

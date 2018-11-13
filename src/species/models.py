@@ -1,6 +1,8 @@
 from django.contrib.gis.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.postgres.fields import JSONField
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 from base.models import Reference, Period
 from app.utils import *
 from operator import itemgetter
@@ -135,6 +137,15 @@ class Species(models.Model):
         super(Species, self).save(*args, **kwargs)
 
 
+@receiver(post_save, sender=Species)
+def update_element_from_species(sender, instance, **kwargs):
+    mwid = settings.TAXON_ELEMENTID_RANGES[instance.taxon.name]
+    max_mwid = Element.objects.filter(species__taxon=instance.taxon).aggregate(Max('elementid'))['elementid__max']
+    if max_mwid is not None:
+        mwid = int(max_mwid)
+    update_species_element(instance, mwid)
+
+
 class SpeciesReference(models.Model):
     species = models.ForeignKey(Species, on_delete=models.CASCADE)
     reference = models.ForeignKey(Reference, on_delete=models.CASCADE)
@@ -150,3 +161,26 @@ class SpeciesReference(models.Model):
 
     def __str__(self):
         return '{}: {}'.format(self.species, self.reference)
+
+
+@receiver(post_save, sender=SpeciesReference)
+def create_element_reference_from_species(sender, instance, created, **kwargs):
+    if created:
+        ref = instance.reference
+        try:
+            e = Element.objects.get(species=instance.species)
+            if ref not in e.references.all():
+                e.references.add(ref)
+        except Element.DoesNotExist:
+            pass
+
+
+@receiver(post_delete, sender=SpeciesReference)
+def delete_element_reference_from_species(sender, instance, **kwargs):
+    ref = instance.reference
+    try:
+        e = Element.objects.get(species=instance.species)
+        if ref in e.references.all():
+            e.references.remove(ref)
+    except Element.DoesNotExist:
+        pass

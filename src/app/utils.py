@@ -2,6 +2,7 @@ import csv
 import datetime
 import copy
 import requests
+from decimal import Decimal
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.urlresolvers import reverse
@@ -13,11 +14,13 @@ from django.contrib.gis.db import models
 from django.contrib.admin import utils as admin_util
 from django.contrib.admin.actions import delete_selected
 from django.contrib.admin.options import FORMFIELD_FOR_DBFIELD_DEFAULTS
+from django.db.models import Max
 from django.forms.models import BaseInlineFormSet
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from suit.widgets import AutosizedTextarea
+from muirweb.models import Element
 
 
 def export_model_as_csv(modeladmin, request, queryset):
@@ -424,3 +427,15 @@ def query_col(payload):
     ret = list({v['id']: v for v in ret if v.get('id') is not None}.values())  # filter duplicates
 
     return ret
+
+
+def update_species_element(s, mwid):
+    if s.name_accepted and s.name_accepted != '':
+        try:
+            e = Element.objects.get(species=s)
+        except Element.DoesNotExist:
+            e = Element(species=s)
+            e.elementid = Decimal('{}.00'.format(mwid))
+        e.name = s.__str__().strip()
+        e.description = s.composite_habitat
+        e.save()

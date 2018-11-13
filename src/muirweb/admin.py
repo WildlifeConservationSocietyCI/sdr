@@ -111,7 +111,7 @@ class ElementAdmin(SdrBaseAdmin):
     list_display = ('elementid', 'name', 'definitiontype', 'spatially_explicit', 'mapped_manually', 'native_units',
                     'last_modified')
     list_display_links = ('elementid', 'name')
-    list_filter = ('spatially_explicit', 'definitiontype', 'mapped_manually', 'native_units')
+    list_filter = ('spatially_explicit', 'definitiontype', 'mapped_manually', 'native_units', 'species__taxon',)
     ordering = ['elementid']
     search_fields = ['elementid', 'name']
     list_per_page = 200

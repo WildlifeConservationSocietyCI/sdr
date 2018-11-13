@@ -44,6 +44,9 @@ class InteractionType(models.Model):
     name = models.CharField(max_length=100)
     operation = models.CharField(max_length=100)
 
+    class Meta:
+        ordering = ['-name', ]
+
     def __str__(self):
         return self.name
 
@@ -76,7 +79,8 @@ class StrengthType(models.Model):
 
 class Element(models.Model):
     elementid = models.DecimalField(unique=True, max_digits=7, decimal_places=2)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,
+                            help_text='Will be populated from related species, if any.')
     species = models.OneToOneField('species.Species', null=True, blank=True, related_name='element',
                                    on_delete=models.SET_NULL)
     definitiontype = models.ForeignKey(DefinitionType, verbose_name='subject type', null=True, blank=True,
@@ -88,16 +92,11 @@ class Element(models.Model):
     subset_rule = models.CharField(max_length=255, blank=True,
                                    help_text='operands: [element_id]; operators: +-/*<>== logical_and() logical_or()')
     adjacency_rule = models.IntegerField(null=True, blank=True, help_text='Within x m (integer)')
-    description = models.TextField(blank=True)
+    description = models.TextField(blank=True,
+                                   help_text='Will be populated from related species, if any.')
     last_modified = models.DateTimeField(auto_now=True, null=True, blank=True)
-    references = models.ManyToManyField('base.Reference', blank=True)
-
-    # def save(self, *args, **kwargs):
-    #     if self.species:
-    #         self.name = self.species.__str__()
-    #     else:
-    #         self.name = ''
-    #     super(Element, self).save(*args, **kwargs)
+    references = models.ManyToManyField('base.Reference', blank=True,
+                                        help_text='Will be populated from related species, if any.')
 
     def __str__(self):
         return self.name

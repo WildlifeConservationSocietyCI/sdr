@@ -175,6 +175,17 @@ EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_TLS = True
 
+TAXON_ELEMENTID_RANGES = {
+    "mammals": 1000,
+    "birds": 2000,
+    "reptiles": 4000,
+    "amphibians": 5000,
+    "fish": 6000,
+    "plants": 10000,
+    "freshwater inverts": 20000,
+    "green algae": 30000,
+}
+
 # Static files (CSS, JavaScript, Images) and media files
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 # https://docs.djangoproject.com/en/1.11/topics/files/
