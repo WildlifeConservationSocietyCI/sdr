@@ -142,7 +142,7 @@ def update_element_from_species(sender, instance, **kwargs):
     mwid = settings.TAXON_ELEMENTID_RANGES[instance.taxon.name]
     max_mwid = Element.objects.filter(species__taxon=instance.taxon).aggregate(Max('elementid'))['elementid__max']
     if max_mwid is not None:
-        mwid = int(max_mwid)
+        mwid = int(max_mwid) + 1
     update_species_element(instance, mwid)
 
 
