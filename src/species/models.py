@@ -139,7 +139,12 @@ class Species(models.Model):
 
 @receiver(post_save, sender=Species)
 def update_element_from_species(sender, instance, **kwargs):
-    mwid = settings.TAXON_ELEMENTID_RANGES[instance.taxon.name]
+    try:
+        mwid = settings.TAXON_ELEMENTID_RANGES[instance.taxon.name]
+    except KeyError:
+        mwid = Element.objects.all().aggregate(Max('elementid'))['elementid__max']
+        if mwid is not None:
+            mwid = int(mwid) + 1
     max_mwid = Element.objects.filter(species__taxon=instance.taxon).aggregate(Max('elementid'))['elementid__max']
     if max_mwid is not None:
         mwid = int(max_mwid) + 1
