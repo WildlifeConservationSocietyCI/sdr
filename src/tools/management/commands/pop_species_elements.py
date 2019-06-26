@@ -20,11 +20,13 @@ class Command(BaseCommand):
                             default=False, help='Clear existing elements before populating'),
 
     def handle(self, *args, **options):
-        taxon_name = options.get('taxon')
+        tname = options.get('taxon')
+        if tname.endswith('s'):
+            tname = tname[:-1]
         try:
-            taxon = Taxon.objects.get(name=taxon_name).pk
+            taxon = Taxon.objects.get(name=tname).pk
         except Taxon.DoesNotExist:
-            raise CommandError('Taxon does not exist: {}'.format(taxon_name))
+            raise CommandError('Taxon does not exist: {}'.format(tname))
         species = Species.objects.filter(taxon=taxon, historical_likelihood_id__lte=2).order_by('name_accepted')
 
         clear = options.get('clear')
@@ -32,7 +34,7 @@ class Command(BaseCommand):
             Element.objects.filter(species__taxon=taxon).delete()
 
         if species.count() > 0:
-            mwid = settings.TAXON_ELEMENTID_RANGES[taxon_name]
+            mwid = settings.TAXON_ELEMENTID_RANGES[tname]
             max_mwid = Element.objects.filter(species__taxon=taxon).aggregate(Max('elementid'))['elementid__max']
             if max_mwid is not None:
                 mwid = int(max_mwid)

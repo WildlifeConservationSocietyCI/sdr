@@ -176,13 +176,13 @@ EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_TLS = True
 
 TAXON_ELEMENTID_RANGES = {
-    "mammals": 1000,
-    "birds": 2000,
-    "reptiles": 4000,
-    "amphibians": 5000,
+    "mammal": 1000,
+    "bird": 2000,
+    "reptile": 4000,
+    "amphibian": 5000,
     "fish": 6000,
-    "plants": 10000,
-    "freshwater inverts": 20000,
+    "plant": 10000,
+    "freshwater invert": 20000,
     "green algae": 30000,
 }
 
