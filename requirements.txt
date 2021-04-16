@@ -10,5 +10,5 @@ django-storages==1.6.5
 django-cleanup==2.1.0
 docutils==0.14
 https://github.com/darklow/django-suit/tarball/v2
-django-debug-toolbar==1.10.1
+django-debug-toolbar==1.11.1
 pylint==1.8.1
